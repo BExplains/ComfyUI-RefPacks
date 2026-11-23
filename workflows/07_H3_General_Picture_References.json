@@ -255,7 +255,8 @@
         5,
         false,
         true,
-        false
+        false,
+        "Auto"
       ]
     },
     {
@@ -460,6 +461,16 @@
           "name": "references",
           "type": "BEXPLAINS_REFERENCES",
           "link": 15
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": null
+        },
+        {
+          "name": "audio_vae",
+          "type": "VAE",
+          "link": null
         }
       ],
       "outputs": [
@@ -478,6 +489,16 @@
         {
           "name": "compiled_prompt",
           "type": "STRING",
+          "links": []
+        },
+        {
+          "name": "Images",
+          "type": "IMAGE",
+          "links": []
+        },
+        {
+          "name": "Audio",
+          "type": "AUDIO",
           "links": []
         }
       ],

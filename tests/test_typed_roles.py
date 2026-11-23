@@ -9,6 +9,43 @@ common=__import__(h.shared_package.__name__+'.core',fromlist=['unused'])
 
 
 class TypedRoleTests(unittest.TestCase):
+    def test_style_resolves_actual_pictures_in_both_h3_formats(self):
+        refs=common.add_pack(h.pack(name='person'),role='character')
+        refs=common.add_pack(h.pack(name='painting',count=2),refs,'style')
+        refs=common.add_pack(h.pack(name='photo'),refs,'style')
+        for task in ('h3_image','h3_video'):
+            text,blocks,items,report=h.core.assemble(refs,'<Character 1> dances in the style of <Style 1>, lit like <Style 2>.',task)
+            self.assertIn('<Subject 1> dances in the style of <Picture 2> and <Picture 3>, lit like <Picture 4>.',text)
+            self.assertNotIn('<Style ',text)
+            self.assertIn('<Style 1>: painting -> <Picture 2>, <Picture 3>',report)
+            self.assertEqual(len(blocks),4)
+            self.assertIs(blocks[1]['latent'],refs['groups'][1]['entries'][0]['latent'])
+        self.assertEqual(common.subject_numbers(refs),{0:1})
+        self.assertEqual([g['role_id'] for g in refs['groups']],[1,1,2])
+
+    def test_style_media_validation_and_missing_alias(self):
+        for pack in (h.pack('video'),h.audio_pack()):
+            with self.assertRaisesRegex(ValueError,'must contain images'):
+                common.add_pack(pack,role='style')
+        with self.assertRaisesRegex(ValueError,'missing <Style 1>'):
+            h.core.assemble(self.refs(),'In the style of <Style 1>.','h3_image')
+        self.assertIn('style',h.shared_package.nodes.BExplainsAddRefPack.INPUT_TYPES()['required']['role'][0])
+
+    def test_style_roundtrip_inspection_and_raw_passthrough(self):
+        refs=common.add_pack(h.pack(name='watercolor'),role='style')
+        refs=common.add_pack(h.pack(name='person'),refs,'character')
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'style.references.safetensors'
+            h.storage.save_references(refs,path)
+            loaded=h.storage.load_references(path)
+        result=h.nodes.BExplainsInspectRefPacks().inspect(loaded,'<Character 1> in the style of <Style 1>.','H3 Image')
+        self.assertIn('<Style 1> -> <Picture 1>',result['result'][1])
+        self.assertIn('<Subject 1> in the style of <Picture 1>.',result['result'][2])
+        extended=common.add_pack(h.pack(),loaded,'style')
+        self.assertEqual(extended['groups'][-1]['role_id'],2)
+        raw='description:\nIn the style of <Style 1>.'
+        self.assertEqual(h.core.assemble(loaded,raw,'h3_image',allow_raw_prompt=True)[0],raw)
+
     def refs(self):
         refs=common.add_pack(h.pack(name='woman',count=2),role='character')
         return common.add_pack(h.pack(name='microphone'),refs,'item')

@@ -149,7 +149,7 @@ Loading restores the same ordered groups, entry order, roles and subject IDs. Yo
 | BExplains Add RefPack | `BExplainsAddRefPack` | `refpack`, `role`, optional previous `references` | Assembled `references` |
 | BExplains Save RefPacks References | `BExplainsSaveRefPacksReferences` | `references`, `filename`, `overwrite` | Original `references`, complete `filename` |
 | BExplains Load RefPacks References | `BExplainsLoadRefPacksReferences` | File selection | Restored `references` |
-| BExplains Inspect RefPack Metadata | `BExplainsInspectReferences` | `references` | Original set and metadata `report`, also shown on the node |
+| BExplains Inspect RefPack Metadata | `BExplainsInspectReferences` | `references`, optional `vae`, `audio_vae` | Original set, metadata `report`, `Images`, `Audio` |
 | BExplains RefPacks Preview Text | `BExplainsRefPacksPreviewText` | `text` | Same STRING, displayed on the node |
 
 The metadata inspector lists names, roles, model targets, source labels, encoder classes and tensor shapes. The H3 collection supplies a separate inspector for native Picture/Video/Audio addressing and compiled prompts.
@@ -176,6 +176,17 @@ Outputs, in order: `model`, `positive`, `negative`, `latent`, `vae`, `reference_
 
 The image receiver attaches cached native `reference_latents`. The LTXV receiver currently accepts **one first-image or leading-video guide**, initializes the video prefix, and sets the corresponding noise mask and frame-rate conditioning. Multiple independently positioned guides are not implemented in this adapter.
 
+### Extract media from an inspected RefPack
+
+Connect **Load RefPack → Add RefPack → Inspect**, or connect **Load RefPacks References** directly to an inspector. Both the shared metadata inspector and **BExplains Inspect Refpacks** expose `Images` and `Audio` after their original outputs.
+
+- **Images without `vae`:** returns the stored reference pixels without decoding. H3 video references contain sampled vision frames, not every frame of the source clip.
+- **Images with `vae`:** reconstructs image/video latents using the matching visual VAE. A video entry stays together as one IMAGE batch, suitable for video preview or re-encoding. Use the VAE matching the entries; mixed model-family sets may require inspecting separate sets.
+- **Audio with `audio_vae`:** reconstructs each audio entry through ComfyUI's native audio decoder. The waveform and output sample rate are returned as standard AUDIO data. This is a VAE reconstruction, not the original waveform.
+- **Audio without `audio_vae`:** returns an empty audio list and explains in the report that an audio VAE is needed. Metadata inspection and image extraction still work.
+
+Both VAE inputs are optional. Leave them disconnected for metadata-only inspection or when their decoded output is not needed. `Images` and `Audio` are list outputs: each visual entry retains its dimensions and each audio clip stays separate. Connect them to Preview Image/Preview Audio or the appropriate Refpack encoder; downstream nodes run for each list item. An absent media type produces an empty list, not a fabricated black image or silent clip. Pixels and decoded audio can be re-encoded, but do not recover detail discarded during the original preparation or VAE encoding.
+
 ## Reference roles
 
 | Role | Required media | Meaning |
@@ -185,6 +196,7 @@ The image receiver attaches cached native `reference_latents`. The LTXV receiver
 | `item` | Images | An object with its own subject definition |
 | `outfit` | Images | Clothing reference |
 | `location` | Images | Environment or architecture reference |
+| `style` | Images | Visual aesthetic, colors, lighting and rendering style; addressed as `<Style n>` in H3 |
 | `reference` | Images or other valid pack entries | General reference material without a prescribed subject definition |
 | `video` | Video | General source-video reference |
 | `motion` | Video | Motion, poses and temporal structure |
@@ -208,6 +220,18 @@ H3's receiving encoder adds role-aware compilation and an **Allow Raw Prompt** t
 ```
 
 This example belongs in the H3 receiver. It is exact text passthrough, not a universal JSON schema for other models. See the [H3 prompting documentation](https://github.com/BExplains/ComfyUI-MiniMax-H3-RefPacks#prompting) for detection rules, accepted keys and native reference addressing.
+
+### Style references
+
+Prepare and load an image RefPack, then select **style** on **Add RefPack**. In an H3 shot instruction, write:
+
+```text
+<Character 1> dances in the style of <Style 1>.
+```
+
+If the character occupies Picture 1 and the style pack occupies Picture 2, this becomes `<Subject 1> dances in the style of <Picture 2>.` A style pack with several images expands to all its Picture slots, such as `<Picture 2> and <Picture 3>`. Style numbering is independent of character, item and other role counters. Inspect Refpacks shows the exact mapping. Style references do not create additional Subject IDs or participate in Auto Outfit's wearer selection.
+
+The role accepts images only, uses the existing RefPack file format and survives scene save/load. It guides visual style; it does not train a style LoRA or guarantee a particular rendering. Raw structured prompt passthrough does not expand `<Style n>`; use native `<Picture n>` tags there. The experimental Flux/LTX receivers do not run H3 alias expansion.
 
 ## How it works
 
@@ -318,7 +342,7 @@ Include:
 
 Use the [shared package's issues](https://github.com/BExplains/ComfyUI-RefPacks/issues) for persistence or shared-node problems and the [H3 collection's issues](https://github.com/BExplains/ComfyUI-MiniMax-H3-RefPacks/issues) for H3 preparation/prompting behavior. Remove private information from shared workflows.
 
-The current development checks comprise **87 passing CPU tests**, including serialization fidelity, reference addressing and native-source payload comparisons. They do not replace live frontend or pretrained-model GPU testing. See [VALIDATION.md](VALIDATION.md) and [CHANGELOG.md](CHANGELOG.md).
+The current development checks comprise **101 passing CPU tests**, including serialization fidelity, reference addressing and native-source payload comparisons. They do not replace live frontend or pretrained-model GPU testing. See [VALIDATION.md](VALIDATION.md) and [CHANGELOG.md](CHANGELOG.md).
 
 ## Credits
 

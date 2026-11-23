@@ -4,7 +4,7 @@ import torch
 
 FORMAT = "bexplains.refpack"
 VERSION = 1
-ROLES = ("subject", "character", "item", "video", "motion", "outfit", "location", "reference", "audio")
+ROLES = ("subject", "character", "item", "video", "motion", "outfit", "location", "reference", "audio", "style")
 SUBJECT_ROLES = ("subject", "character", "item")
 
 
@@ -90,7 +90,7 @@ def add_pack(pack, references=None, role="subject", role_id=0):
     validate_pack(pack)
     if role not in ROLES:
         raise ValueError("Unknown reference role.")
-    if role in ("subject", "character", "item", "outfit", "location") and any(e["kind"] != "image" for e in pack["entries"]):
+    if role in ("subject", "character", "item", "outfit", "location", "style") and any(e["kind"] != "image" for e in pack["entries"]):
         raise ValueError(f"A {role} pack must contain images, not a video.")
     if role in ("video", "motion") and any(e["kind"] != "video" for e in pack["entries"]):
         raise ValueError(f"The {role} role requires video references.")

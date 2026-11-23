@@ -3,6 +3,7 @@ import math
 import torch
 from .core import FORMAT, VERSION, validate_pack
 from .adapters import ADAPTERS, for_model
+from .media import extract_media
 
 CATEGORY = "BExplains/RefPacks"
 PACK_TYPE = "BEXPLAINS_REFPACK"
@@ -178,19 +179,23 @@ class BExplainsRefPackToVideo(_Receiver):
 class BExplainsInspectReferences:
     @classmethod
     def INPUT_TYPES(cls):
-        return {"required": {"references": (SET_TYPE,)}}
-    RETURN_TYPES = (SET_TYPE, "STRING")
-    RETURN_NAMES = ("references", "report")
+        return {"required": {"references": (SET_TYPE,)},
+                "optional": {"vae": ("VAE", {"tooltip": "Matching image/video VAE for reconstructing full visual latents. Leave disconnected to return cached pixels."}),
+                             "audio_vae": ("VAE", {"tooltip": "Matching audio VAE for reconstructing stored audio latents."})}}
+    RETURN_TYPES = (SET_TYPE, "STRING", "IMAGE", "AUDIO")
+    RETURN_NAMES = ("references", "report", "Images", "Audio")
+    OUTPUT_IS_LIST = (False, False, True, True)
     FUNCTION = "inspect"
     CATEGORY = CATEGORY
     OUTPUT_NODE = True
 
-    def inspect(self, references):
+    def inspect(self, references, audio_vae=None, vae=None):
         lines = []
         for group in references.get("groups", []):
             lines.append(f"{group['role']}: {group['name']} | target: {group.get('target', group.get('source_target'))} | encoder: {group.get('encoder_class', 'unspecified')} | file: {group.get('source_file') or '(unsaved)'}")
             for e in group["entries"]:
                 z = e.get("latent", e.get("audio_latent"))
                 lines.append(f"  {e['kind']}: {list(z.shape)}")
-        report = "\n".join(lines)
-        return {"ui": {"text": [report]}, "result": (references, report)}
+        images, audio, media_report = extract_media(references, audio_vae, vae)
+        report = "\n".join(lines + ["", media_report])
+        return {"ui": {"text": [report]}, "result": (references, report, images, audio)}

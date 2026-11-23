@@ -179,12 +179,12 @@ class ReceiverTests(unittest.TestCase):
         node=h.nodes.BExplainsRefPackToH3()
         for stage in (MiniMaxH3ImageVAE(),MiniMaxH3VideoVAE(still_frame=3)):
             with contextlib.redirect_stdout(io.StringIO()):
-                result=node.compile(h.FakeModel(),h.RecordingClip(),refs,'<Subject 1> smiles','',64,64,175,True,types.SimpleNamespace(first_stage_model=stage),False)
+                result=node.compile(h.FakeModel(),h.RecordingClip(),refs,'<Subject 1> smiles','',64,64,175,True,types.SimpleNamespace(first_stage_model=stage),False,generation_mode="Image")
             self.assertEqual(result[3]['samples'].unbind()[0].shape[0],1)
             self.assertEqual(result[3]['samples'].unbind()[0].shape[2],1)
             self.assertIn('exceeds the 4-image limit',result[4])
         vae=types.SimpleNamespace(first_stage_model=MiniMaxH3VideoVAE())
-        result=node.compile(h.FakeModel(),h.RecordingClip(),refs,'<Subject 1> smiles','',64,64,4,True,vae,False)
+        result=node.compile(h.FakeModel(),h.RecordingClip(),refs,'<Subject 1> smiles','',64,64,4,True,vae,False,generation_mode='Video')
         self.assertEqual(result[3]['samples'][0].shape[2],2) # 5 video frames, not 4 images.
         with self.assertRaisesRegex(ValueError,'cannot generate video'):
             node.compile(h.FakeModel(True),h.RecordingClip(),refs,'','',64,64,5,True,vae,False)

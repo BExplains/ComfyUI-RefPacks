@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.1.0 — 2026-11-23
+
+- Add Auto/Image/Video generation mode to H3 encoders. Auto uses length 1-4 for images and 5+ for video; explicit Video rounds up to at least five frames. VAE selection no longer chooses generation mode.
+
+- Add image-only style groups and H3 `<Style n>` aliases resolving to actual Picture slots; preserve style roles through scene save/load.
+
+- Add Images and Audio list outputs to both inspectors, with optional visual/audio VAEs for reconstruction and cached-pixel extraction without a VAE.
+- Preserve existing output indices and entry dimensions; keep video frames batched and audio clips separate.
+- Rename the H3 inspector to BExplains Inspect Refpacks without changing its internal ID.
+
+- Stop tracking Python bytecode caches; keep them excluded from source and release archives.
+
 ## 1.0.1
 
 - Rename encoder display names to Encode Image Refpack and Encode Video Refpack.

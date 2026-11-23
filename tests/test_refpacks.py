@@ -389,7 +389,7 @@ class RefPacksTests(unittest.TestCase):
         refs=core.add_pack(loaded,role='subject')
         for image in (False,True):
             clip=RecordingClip()
-            result=nodes.BExplainsH3RefPackConditioning().compile(FakeModel(image),clip,refs,'<Subject 1> stands.','',64,64,22,True,False)
+            result=nodes.BExplainsH3RefPackConditioning().compile(FakeModel(image),clip,refs,'<Subject 1> stands.','',64,64,22,True,False,generation_mode='Image' if image else 'Video')
             self.assertIs(result[1][0][1]['minimax_refs'][0]['latent'],loaded['entries'][0]['latent'])
             args=clip.calls[0][1]
             vision=args['images'][0] if image else args['minimax_ref_items'][0]['data']
@@ -454,7 +454,7 @@ class RefPacksTests(unittest.TestCase):
         refs=core.add_pack(p,role="subject")
         self.assertIs(core.add_pack(None,refs,"outfit"),refs)
         clip=RecordingClip()
-        result=nodes.BExplainsH3RefPackConditioning().compile(FakeModel(image=True),clip,refs,"<Subject 1> stands.","",64,64,5,True)
+        result=nodes.BExplainsH3RefPackConditioning().compile(FakeModel(image=True),clip,refs,"<Subject 1> stands.","",64,64,5,True,generation_mode="Image")
         self.assertEqual(result[3]['samples'].shape,(1,24,1,4,4))
         self.assertEqual(clip.calls[0][1]['picture_label'],"Picture %d: ")
 
@@ -484,7 +484,7 @@ class RefPacksTests(unittest.TestCase):
         for image,target in ((False,"h3_video"),(True,"h3_image")):
             with self.subTest(target=target):
                 refs=core.add_pack(pack(target=target),role="subject")
-                result=nodes.BExplainsH3RefPackConditioning().compile(FakeModel(image=image),RecordingClip(),refs,"<Subject 1> stands.","",240,432,73,True)
+                result=nodes.BExplainsH3RefPackConditioning().compile(FakeModel(image=image),RecordingClip(),refs,"<Subject 1> stands.","",240,432,73,True,generation_mode="Image" if image else "Video")
                 z=result[3]["samples"] if image else result[3]["samples"][0]
                 self.assertEqual(z.shape[-2:],(27,15))
                 self.assertIn("canvas: 240x432",result[4])

@@ -1,6 +1,6 @@
-# Validation — 1.0.0
+# Validation — working tree (inspector media outputs)
 
-87 CPU tests passed with real PyTorch tensors and safetensors serialization.
+101 CPU tests passed with real PyTorch tensors and safetensors serialization.
 ComfyUI encoders/model interfaces use recording doubles; no pretrained weights
 were loaded and no live ComfyUI frontend or GPU generation was performed.
 
@@ -89,3 +89,11 @@ corresponding ComfyUI source snapshots before running:
 - `minimax/vae.py`: `fd32db0e1fd277fac561c6232323afc53957ed6eb48cc50eca18730a0a6bb0d1`
 - `nested_tensor.py`: `d4d1f56e90bbf1b758de069a0949d6c26c0329cd3894188124a65235aa704aeb`
 - `patcher_extension.py`: `1c7b3b855278d0b95d1c1a705fa0b3c91a265f320e2f97bdeb9d15469d6d4ac7`
+
+## Inspector media outputs
+
+Seven additional CPU tests cover cached pixel fidelity and isolation, mixed image sizes, sampled video frames, full video reconstruction, independent audio clips, native audio decoder layout/output sample rate, saved asset/scene extraction, and unchanged original inspector output indices. No pretrained-model reconstruction was performed. Set `REFPACKS_NATIVE_AUDIO_SOURCE` to `comfy_extras/nodes_audio.py` for the native audio decoder check. Both VAE inputs are optional.
+
+Style-role tests cover both H3 prompt formats, actual Picture indices, multi-image styles, independent numbering without new Subject IDs, image-only validation, missing aliases, saved scenes, inspector mappings and unchanged raw passthrough.
+
+Generation mode checks cover Auto boundaries (1–4 images, 5+ video), explicit Image/Video overrides, minimum video length and temporal rounding, decoder/model incompatibility, and dropdown defaults/tooltips. Earlier VAE-selected-intent checks now select explicit modes where required.
