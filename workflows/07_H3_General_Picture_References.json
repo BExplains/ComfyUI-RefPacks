@@ -438,7 +438,7 @@
         "Node name for S&R": "Note"
       },
       "widgets_values": [
-        "GENERAL-PURPOSE PICTURES. Prepare any images using workflow 02 and save as reference.safetensors, or connect Encode Images directly to Add RefPack for temporary input. Set role to reference. Each image becomes its own <Picture N>. No identity, outfit, location, motion or framing meaning is assigned. Describe its purpose in the prompt: style, item, lighting, palette, composition or anything else. Multiple images and mixed subject/outfit/location/reference packs work together. Picture numbers follow chain order; see the reference-map preview. Use the same pack with H3 Image or Ref2VA. Select your image model, CLIP and output VAE for this example."
+        "GENERAL-PURPOSE PICTURES. Prepare any images using workflow 02 and save as reference.safetensors, or connect Encode H3 Image Refpack directly to Add RefPack for temporary input. Set role to reference. Each image becomes its own <Picture N>. No identity, outfit, location, motion or framing meaning is assigned. Describe its purpose in the prompt: style, item, lighting, palette, composition or anything else. Multiple images and mixed subject/outfit/location/reference packs work together. Picture numbers follow chain order; see the reference-map preview. Use the same pack with H3 Image or Ref2VA. Select your image model, CLIP and output VAE for this example."
       ]
     },
     {

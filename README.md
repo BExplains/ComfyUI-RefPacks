@@ -6,7 +6,7 @@ RefPacks stores cached image, video and audio reference data together with the m
 
 This is the shared package. Model-specific preparation and prompting belong in separate collections, starting with **[MiniMax H3 RefPacks](https://github.com/BExplains/ComfyUI-MiniMax-H3-RefPacks)**. Installing the H3 collection is optional unless you want to use H3 nodes or workflows.
 
-**Version 1.0.0.** The included Flux 2 and LTXV 0.9.8 adapters are **experimental testing integrations, not officially supported model integrations**. Publishing the shared package does not change their validation status.
+**Version 1.0.1.** The included Flux 2 and LTXV 0.9.8 adapters are **experimental testing integrations, not officially supported model integrations**. Publishing the shared package does not change their validation status.
 
 ## Contents
 
@@ -43,6 +43,18 @@ Reference preparation is not LoRA training. Saving a pack does not modify model 
 
 Requires ComfyUI, its normal PyTorch environment, and `safetensors`. Model-specific nodes also require a ComfyUI version with native support for that model family and its matching weights.
 
+### Install from the Comfy Registry
+
+Install with ComfyUI-Manager or Comfy CLI:
+
+```bash
+comfy node install bexplains-refpacks
+```
+
+[Registry listing](https://registry.comfy.org/publishers/bexplains/nodes/bexplains-refpacks). New releases must complete registry security processing before an active release is available.
+
+The H3 collection requires the shared **BExplains RefPacks** custom-node package. Install it separately; Python dependency installation does not install the companion node pack. Keep only one installed copy of each package, then restart ComfyUI.
+
 ### Install from source
 
 From your ComfyUI directory:
@@ -52,7 +64,7 @@ cd custom_nodes
 git clone https://github.com/BExplains/ComfyUI-RefPacks.git BExplains_RefPacks
 ```
 
-The explicit destination name matters: install this package as **`BExplains_RefPacks`**. The H3 collection discovers its shared dependency by that folder name.
+The command uses the legacy folder name **`BExplains_RefPacks`**. The H3 collection also discovers registry installs named `bexplains-refpacks` and source clones named `ComfyUI-RefPacks`, including configured custom-node directories.
 
 If needed, install the requirements using ComfyUI's Python environment:
 
@@ -84,7 +96,7 @@ When upgrading from the earlier combined package, replace the old shared folder 
 
 ### Save and reuse an individual asset
 
-1. Prepare a reference with the appropriate collection's encoder. For H3, use **BExplains Encode H3 Image References**, **Video Reference** or **Audio Reference** from the H3 collection.
+1. Prepare a reference with the appropriate collection's encoder. For H3, use **Encode H3 Image Refpack**, **Encode H3 Video Refpack** or **Encode H3 Audio Refpack** from the H3 collection.
 2. Connect its `refpack` output to **BExplains Save RefPack**.
 3. Enter a plain name such as `mai_concert`.
 4. Queue the workflow.
@@ -146,8 +158,8 @@ The metadata inspector lists names, roles, model targets, source labels, encoder
 
 | Display name / internal ID | Purpose |
 | --- | --- |
-| **BExplains Encode Image References** / `BExplainsEncodeImageReferences` | Encode each input batch image separately with the chosen model family's VAE. Inputs: `vae`, `images`, `model_family`, `name`, `width`, `height`. Output: `refpack`. |
-| **BExplains Encode Video Reference** / `BExplainsEncodeVideoReference` | Prepare an LTXV video-prefix guide. Inputs: `vae`, `frames`, `model_family`, `name`, source `fps`, `width`, `height`. Pads the final frame to the adapter's temporal grid. Output: `refpack`. |
+| **Encode Image Refpack** / `BExplainsEncodeImageReferences` | Encode each input batch image separately with the chosen model family's VAE. Inputs: `vae`, `images`, `model_family`, `name`, `width`, `height`. Output: `refpack`. |
+| **Encode Video Refpack** / `BExplainsEncodeVideoReference` | Prepare an LTXV video-prefix guide. Inputs: `vae`, `frames`, `model_family`, `name`, source `fps`, `width`, `height`. Pads the final frame to the adapter's temporal grid. Output: `refpack`. |
 
 These shared preparation adapters currently target Flux 2 images and LTXV 0.9.8 image/video guides for testing. Use the separate H3 preparation nodes for H3 assets.
 
@@ -215,7 +227,7 @@ Individual assets contain cached tensors and metadata such as `target`, `source_
 
 The scene container embeds the complete tensor data plus an ordered JSON manifest, including collection name, group names, roles, IDs, encoder provenance, source labels and entry metadata. No ZIP extraction, external pack links or separate sidecar file is needed. Tensors are saved losslessly on CPU without pickle.
 
-The application version **1.0.0** is separate from the on-disk format versions.
+The application version **1.0.1** is separate from the on-disk format versions.
 
 ## Compatibility
 
@@ -254,7 +266,7 @@ Select local weights and media. For comparisons with earlier tutorials, retain t
 | Problem | Check |
 | --- | --- |
 | Nodes missing | Check startup errors, restart ComfyUI, refresh the browser and verify the folder layout. |
-| H3 dependency cannot be found | The shared folder must be named `BExplains_RefPacks` and sit beside `BExplains_H3_RefPacks`. |
+| H3 dependency cannot be found | Install the shared package as `bexplains-refpacks`, `ComfyUI-RefPacks` or `BExplains_RefPacks` in a configured custom-node directory, then restart ComfyUI. |
 | New file absent from a loader | Refresh node definitions or the browser. Individual packs and complete reference sets have separate loader lists. |
 | Existing-file error | Choose a new name or explicitly enable overwrite. Default saves preserve the original file. |
 | Individual loader rejects a scene file | Use **Load RefPacks References**, not **Load RefPack**. |
@@ -306,7 +318,7 @@ Include:
 
 Use the [shared package's issues](https://github.com/BExplains/ComfyUI-RefPacks/issues) for persistence or shared-node problems and the [H3 collection's issues](https://github.com/BExplains/ComfyUI-MiniMax-H3-RefPacks/issues) for H3 preparation/prompting behavior. Remove private information from shared workflows.
 
-The current development checks comprise **82 passing CPU tests**, including serialization fidelity, reference addressing and native-source payload comparisons. They do not replace live frontend or pretrained-model GPU testing. See [VALIDATION.md](VALIDATION.md) and [CHANGELOG.md](CHANGELOG.md).
+The current development checks comprise **87 passing CPU tests**, including serialization fidelity, reference addressing and native-source payload comparisons. They do not replace live frontend or pretrained-model GPU testing. See [VALIDATION.md](VALIDATION.md) and [CHANGELOG.md](CHANGELOG.md).
 
 ## Credits
 
@@ -315,3 +327,7 @@ The current development checks comprise **82 passing CPU tests**, including seri
 - **[BExplains](https://github.com/BExplains)** — RefPacks and the node collections.
 
 The companion [H3 Image RefMods project](https://github.com/BExplains/ComfyUI-MiniMaxH3-Image-RefMods) documents the earlier RefMod approach. RefPacks uses its own format; the earlier creator and its upstream loader/Apply extension are not runtime dependencies of this shared package. Attribution does not imply endorsement.
+
+## License
+
+Released under the [MIT License](LICENSE). Model weights and third-party dependencies retain their own licenses.

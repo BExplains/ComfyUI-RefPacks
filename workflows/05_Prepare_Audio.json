@@ -171,7 +171,7 @@
         "Node name for S&R": "Note"
       },
       "widgets_values": [
-        "Choose audio and the H3 AUDIO VAE. Run once to save models/refpacks/audio.safetensors. For temporary references, bypass Save RefPack: Encode Audio -> Add RefPack (role audio) -> H3 RefPack Conditioning. Use <Audio 1> in the prompt. H3 generates guided audio; exact waveform playback is a separate operation."
+        "Choose audio and the H3 AUDIO VAE. Run once to save models/refpacks/audio.safetensors. For temporary references, bypass Save RefPack: Encode H3 Audio Refpack -> Add RefPack (role audio) -> H3 RefPack Conditioning. Use <Audio 1> in the prompt. H3 generates guided audio; exact waveform playback is a separate operation."
       ]
     }
   ],

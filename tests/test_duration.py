@@ -3,7 +3,7 @@ import importlib.util
 from pathlib import Path
 import unittest
 
-spec = importlib.util.spec_from_file_location("refpack_duration", Path(__file__).resolve().parents[2] / "BExplains_H3_RefPacks" / "duration.py")
+spec = importlib.util.spec_from_file_location("refpack_duration", next(p for p in (Path(__file__).resolve().parents[2] / "ComfyUI-MiniMax-H3-RefPacks" / "duration.py", Path(__file__).resolve().parents[2] / "BExplains_H3_RefPacks" / "duration.py") if p.is_file()))
 duration = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(duration)
 

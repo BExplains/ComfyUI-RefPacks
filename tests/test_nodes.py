@@ -1,11 +1,8 @@
 """Routing checks only: tensor shape stand-ins, no model inference."""
-import importlib.util
-from pathlib import Path
 import unittest
+from test_refpacks import package
 
-spec = importlib.util.spec_from_file_location("bexplains_refpacks_nodes", Path(__file__).resolve().parents[1] / "nodes.py")
-module = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(module)
+module = package.legacy
 
 
 class ShapeTensor:

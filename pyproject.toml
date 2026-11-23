@@ -1,0 +1,17 @@
+[project]
+name = "bexplains-refpacks"
+version = "1.0.1"
+description = "Save, load and group reusable reference packs and complete reference sets. Includes experimental Flux 2 and LTXV adapters."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+dependencies = ["safetensors>=0.4.3"]
+classifiers = ["Operating System :: OS Independent"]
+
+[project.urls]
+Repository = "https://github.com/BExplains/ComfyUI-RefPacks"
+"Bug Tracker" = "https://github.com/BExplains/ComfyUI-RefPacks/issues"
+
+[tool.comfy]
+PublisherId = "bexplains"
+DisplayName = "BExplains RefPacks"

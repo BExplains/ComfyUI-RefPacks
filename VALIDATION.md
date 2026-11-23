@@ -1,6 +1,6 @@
 # Validation — 1.0.0
 
-82 CPU tests passed with real PyTorch tensors and safetensors serialization.
+87 CPU tests passed with real PyTorch tensors and safetensors serialization.
 ComfyUI encoders/model interfaces use recording doubles; no pretrained weights
 were loaded and no live ComfyUI frontend or GPU generation was performed.
 
@@ -68,7 +68,7 @@ Install torch and safetensors in the test environment, then run from the directo
 containing both collection folders:
 
 ```bash
-python -m unittest discover -s BExplains_RefPacks/tests -v
+python -m unittest discover -s ComfyUI-RefPacks/tests -v
 ```
 
 Native-source comparisons are optional. To repeat those checks, set paths to the

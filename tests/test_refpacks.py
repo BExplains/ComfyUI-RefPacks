@@ -15,11 +15,13 @@ import unittest
 import torch
 
 ROOT = Path(__file__).resolve().parents[1]
+H3_ROOT = next(p for p in (ROOT.parent / "ComfyUI-MiniMax-H3-RefPacks", ROOT.parent / "BExplains_H3_RefPacks") if p.is_dir())
 FOLDERS = tempfile.TemporaryDirectory()
 folder_paths = types.ModuleType("folder_paths")
 folder_paths.models_dir = FOLDERS.name
 folder_paths.add_model_folder_path = lambda *args: None
 folder_paths.get_filename_list = lambda *args: []
+folder_paths.get_folder_paths = lambda *args: [str(ROOT.parent)]
 sys.modules["folder_paths"] = folder_paths
 
 # Provide the Comfy interfaces needed for unit checks, without loading any model.
@@ -79,7 +81,7 @@ package=importlib.util.module_from_spec(spec)
 sys.modules[spec.name]=package
 spec.loader.exec_module(package)
 shared_package=package
-spec=importlib.util.spec_from_file_location("bexplains_h3_under_test",ROOT.parent/"BExplains_H3_RefPacks"/"__init__.py",submodule_search_locations=[str(ROOT.parent/"BExplains_H3_RefPacks")])
+spec=importlib.util.spec_from_file_location("bexplains_h3_under_test",H3_ROOT/"__init__.py",submodule_search_locations=[str(H3_ROOT)])
 package=importlib.util.module_from_spec(spec)
 sys.modules[spec.name]=package
 spec.loader.exec_module(package)
@@ -600,7 +602,7 @@ class RefPacksTests(unittest.TestCase):
         self.assertEqual(len(vae.calls),0)
 
     def test_workflow_links_and_custom_node_registration(self):
-        for path in list((ROOT/"workflows").glob("*.json")) + list((ROOT.parent/"BExplains_H3_RefPacks"/"workflows").glob("*.json")):
+        for path in list((ROOT/"workflows").glob("*.json")) + list((H3_ROOT/"workflows").glob("*.json")):
             with self.subTest(workflow=path.name):
                 flow=json.loads(path.read_text());by_id={n['id']:n for n in flow['nodes']}
                 links={link[0]:link for link in flow['links']}

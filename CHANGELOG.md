@@ -1,6 +1,16 @@
 # Changelog
 
+## 1.0.1
+
+- Rename encoder display names to Encode Image Refpack and Encode Video Refpack.
+- Update README, workflow instructions and error messages to use the new names.
+- Preserve internal node IDs, saved workflow compatibility and encoding behavior.
+
 ## 1.0.0
+
+- Prepare Comfy Registry metadata, MIT licensing and clean release archives.
+- Document registry installation and explicit companion-package installation.
+- Correct stale test paths after splitting the H3 collection; 87 CPU tests pass.
 
 - Prepare both packages for the first public release at version 1.0.0.
 - Rewrite each README with installation, quick start, node reference, prompting,

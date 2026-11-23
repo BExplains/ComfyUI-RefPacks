@@ -212,10 +212,14 @@ import importlib.util, pathlib, sys, tempfile, types
 root=pathlib.Path(sys.argv[1]);order=sys.argv[2]
 folders=types.ModuleType('folder_paths');folders.models_dir=tempfile.mkdtemp()
 folders.add_model_folder_path=lambda *a:None;folders.get_filename_list=lambda *a:[]
+folders.get_folder_paths=lambda *a:[str(root)]
 sys.modules['folder_paths']=folders
 
 def load(name, directory):
-    path=root/directory/'__init__.py'
+    aliases={'BExplains_RefPacks':'ComfyUI-RefPacks','BExplains_H3_RefPacks':'ComfyUI-MiniMax-H3-RefPacks'}
+    folder=root/directory
+    if not folder.is_dir():folder=root/aliases[directory]
+    path=folder/'__init__.py'
     spec=importlib.util.spec_from_file_location(name,path,submodule_search_locations=[str(path.parent)])
     module=importlib.util.module_from_spec(spec);sys.modules[name]=module;spec.loader.exec_module(module)
     return module
