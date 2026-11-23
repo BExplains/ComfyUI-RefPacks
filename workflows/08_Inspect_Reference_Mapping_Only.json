@@ -1,0 +1,269 @@
+{
+  "id": "84d71fd3-6b0b-4f47-8e23-e62b8de624e3",
+  "revision": 0,
+  "last_node_id": 6,
+  "last_link_id": 4,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "BExplainsLoadRefPack",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        350,
+        120
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "refpack",
+          "type": "BEXPLAINS_REFPACK",
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BExplainsLoadRefPack"
+      },
+      "widgets_values": [
+        "character.safetensors",
+        true
+      ],
+      "title": "Saved character"
+    },
+    {
+      "id": 2,
+      "type": "BExplainsAddRefPack",
+      "pos": [
+        420,
+        0
+      ],
+      "size": [
+        350,
+        140
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "refpack",
+          "type": "BEXPLAINS_REFPACK",
+          "link": 1
+        },
+        {
+          "name": "references",
+          "type": "BEXPLAINS_REFERENCES",
+          "shape": 7,
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "references",
+          "type": "BEXPLAINS_REFERENCES",
+          "links": [
+            3
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BExplainsAddRefPack"
+      },
+      "widgets_values": [
+        "subject"
+      ]
+    },
+    {
+      "id": 3,
+      "type": "BExplainsLoadRefPack",
+      "pos": [
+        0,
+        300
+      ],
+      "size": [
+        350,
+        120
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "refpack",
+          "type": "BEXPLAINS_REFPACK",
+          "links": [
+            2
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BExplainsLoadRefPack"
+      },
+      "widgets_values": [
+        "reference.safetensors",
+        true
+      ],
+      "title": "Saved general pictures"
+    },
+    {
+      "id": 4,
+      "type": "BExplainsAddRefPack",
+      "pos": [
+        420,
+        300
+      ],
+      "size": [
+        350,
+        140
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "refpack",
+          "type": "BEXPLAINS_REFPACK",
+          "link": 2
+        },
+        {
+          "name": "references",
+          "type": "BEXPLAINS_REFERENCES",
+          "shape": 7,
+          "link": 3
+        }
+      ],
+      "outputs": [
+        {
+          "name": "references",
+          "type": "BEXPLAINS_REFERENCES",
+          "links": [
+            4
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BExplainsAddRefPack"
+      },
+      "widgets_values": [
+        "reference"
+      ]
+    },
+    {
+      "id": 5,
+      "type": "BExplainsInspectRefPacks",
+      "pos": [
+        850,
+        0
+      ],
+      "size": [
+        600,
+        500
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "references",
+          "type": "BEXPLAINS_REFERENCES",
+          "link": 4
+        }
+      ],
+      "outputs": [
+        {
+          "name": "references",
+          "type": "BEXPLAINS_REFERENCES",
+          "links": []
+        },
+        {
+          "name": "tag_mapping",
+          "type": "STRING",
+          "links": []
+        },
+        {
+          "name": "compiled_prompt",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BExplainsInspectRefPacks"
+      },
+      "widgets_values": [
+        "",
+        "H3 Video",
+        true
+      ],
+      "title": "Inspect slots BEFORE text encoding (Run only this node)"
+    },
+    {
+      "id": 6,
+      "type": "Note",
+      "pos": [
+        0,
+        550
+      ],
+      "size": [
+        720,
+        260
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "Note"
+      },
+      "widgets_values": [
+        "INSPECT WITHOUT TEXT ENCODING. Select your saved character and generic image pack filenames, then Run this workflow. There is no model, CLIP or sampler here. Every Picture/Video/Audio label is shown with the source file, pack name and local entry number.\n\nOptional: enter a shot prompt in Inspect References to see its compiled form; choose the same prompt format and auto_outfit as your generation node. Blank prompt gives mapping only. Generic pictures follow all earlier images in the chain.\n\nIn a rendering workflow, insert Inspect References between the final Add RefPack and conditioning. Run only the inspector using your ComfyUI partial-execution control to inspect without executing downstream nodes. Its references output passes the set through unchanged."
+      ]
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      0,
+      "BEXPLAINS_REFPACK"
+    ],
+    [
+      2,
+      3,
+      0,
+      4,
+      0,
+      "BEXPLAINS_REFPACK"
+    ],
+    [
+      3,
+      2,
+      0,
+      4,
+      1,
+      "BEXPLAINS_REFERENCES"
+    ],
+    [
+      4,
+      4,
+      0,
+      5,
+      0,
+      "BEXPLAINS_REFERENCES"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {},
+  "version": 0.4
+}

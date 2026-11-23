@@ -1,0 +1,890 @@
+{
+  "id": "ad2c929a-3710-4c6b-995d-e53644511ee5",
+  "revision": 0,
+  "last_node_id": 17,
+  "last_link_id": 20,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "CheckpointLoaderSimple",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        350,
+        180
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            7
+          ]
+        },
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": []
+        },
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            3,
+            9
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CheckpointLoaderSimple"
+      },
+      "widgets_values": [
+        "ltxv-13b-0.9.8-distilled.safetensors"
+      ]
+    },
+    {
+      "id": 2,
+      "type": "CLIPLoader",
+      "pos": [
+        0,
+        500
+      ],
+      "size": [
+        350,
+        180
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            8
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPLoader"
+      },
+      "widgets_values": [
+        "SELECT_LTXV_T5_ENCODER.safetensors",
+        "ltxv",
+        "default"
+      ]
+    },
+    {
+      "id": 3,
+      "type": "LoadImage",
+      "pos": [
+        0,
+        750
+      ],
+      "size": [
+        350,
+        180
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            4
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "reference.png",
+        "image"
+      ]
+    },
+    {
+      "id": 4,
+      "type": "BExplainsEncodeImageReferences",
+      "pos": [
+        430,
+        250
+      ],
+      "size": [
+        350,
+        180
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 3
+        },
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 4
+        }
+      ],
+      "outputs": [
+        {
+          "name": "refpack",
+          "type": "BEXPLAINS_REFPACK",
+          "links": [
+            5
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BExplainsEncodeImageReferences"
+      },
+      "widgets_values": [
+        "LTXV 0.9.8",
+        "ltxv_reference",
+        768,
+        512
+      ]
+    },
+    {
+      "id": 5,
+      "type": "BExplainsSaveRefPack",
+      "pos": [
+        430,
+        550
+      ],
+      "size": [
+        350,
+        180
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "refpack",
+          "type": "BEXPLAINS_REFPACK",
+          "link": 5
+        }
+      ],
+      "outputs": [
+        {
+          "name": "refpack",
+          "type": "BEXPLAINS_REFPACK",
+          "links": [
+            6
+          ]
+        },
+        {
+          "name": "filename",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BExplainsSaveRefPack"
+      },
+      "widgets_values": [
+        "ltxv_reference",
+        false
+      ]
+    },
+    {
+      "id": 6,
+      "type": "BExplainsAddRefPack",
+      "pos": [
+        850,
+        250
+      ],
+      "size": [
+        350,
+        180
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "refpack",
+          "type": "BEXPLAINS_REFPACK",
+          "link": 6
+        },
+        {
+          "name": "references",
+          "type": "BEXPLAINS_REFERENCES",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "references",
+          "type": "BEXPLAINS_REFERENCES",
+          "links": [
+            10
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BExplainsAddRefPack"
+      },
+      "widgets_values": [
+        "reference"
+      ]
+    },
+    {
+      "id": 7,
+      "type": "BExplainsRefPackToVideo",
+      "pos": [
+        1250,
+        100
+      ],
+      "size": [
+        430,
+        370
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 7
+        },
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 8
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 9
+        },
+        {
+          "name": "references",
+          "type": "BEXPLAINS_REFERENCES",
+          "link": 10
+        }
+      ],
+      "outputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "links": [
+            11
+          ]
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "links": [
+            12
+          ]
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "links": []
+        },
+        {
+          "name": "latent",
+          "type": "LATENT",
+          "links": [
+            17
+          ]
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "links": [
+            19
+          ]
+        },
+        {
+          "name": "reference_report",
+          "type": "STRING",
+          "links": [
+            20
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BExplainsRefPackToVideo"
+      },
+      "widgets_values": [
+        "The subject in the first frame turns toward the camera. A slow cinematic camera move, natural lighting.",
+        "",
+        768,
+        512,
+        97,
+        25,
+        1
+      ]
+    },
+    {
+      "id": 8,
+      "type": "RandomNoise",
+      "pos": [
+        1250,
+        550
+      ],
+      "size": [
+        350,
+        180
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "NOISE",
+          "type": "NOISE",
+          "links": [
+            13
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "RandomNoise"
+      },
+      "widgets_values": [
+        42,
+        "randomize"
+      ]
+    },
+    {
+      "id": 9,
+      "type": "BasicGuider",
+      "pos": [
+        1750,
+        100
+      ],
+      "size": [
+        350,
+        180
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 11
+        },
+        {
+          "name": "conditioning",
+          "type": "CONDITIONING",
+          "link": 12
+        }
+      ],
+      "outputs": [
+        {
+          "name": "GUIDER",
+          "type": "GUIDER",
+          "links": [
+            14
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BasicGuider"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 10,
+      "type": "KSamplerSelect",
+      "pos": [
+        1750,
+        350
+      ],
+      "size": [
+        350,
+        180
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SAMPLER",
+          "type": "SAMPLER",
+          "links": [
+            15
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSamplerSelect"
+      },
+      "widgets_values": [
+        "euler"
+      ]
+    },
+    {
+      "id": 11,
+      "type": "ManualSigmas",
+      "pos": [
+        1750,
+        550
+      ],
+      "size": [
+        350,
+        180
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SIGMAS",
+          "type": "SIGMAS",
+          "links": [
+            16
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ManualSigmas"
+      },
+      "widgets_values": [
+        "1, 0.9937, 0.9875, 0.9812, 0.9750, 0.9094, 0.7250, 0.4219, 0"
+      ]
+    },
+    {
+      "id": 12,
+      "type": "SamplerCustomAdvanced",
+      "pos": [
+        2170,
+        150
+      ],
+      "size": [
+        350,
+        180
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "noise",
+          "type": "NOISE",
+          "link": 13
+        },
+        {
+          "name": "guider",
+          "type": "GUIDER",
+          "link": 14
+        },
+        {
+          "name": "sampler",
+          "type": "SAMPLER",
+          "link": 15
+        },
+        {
+          "name": "sigmas",
+          "type": "SIGMAS",
+          "link": 16
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 17
+        }
+      ],
+      "outputs": [
+        {
+          "name": "output",
+          "type": "LATENT",
+          "links": [
+            18
+          ]
+        },
+        {
+          "name": "denoised_output",
+          "type": "LATENT",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SamplerCustomAdvanced"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 13,
+      "type": "VAEDecode",
+      "pos": [
+        2590,
+        150
+      ],
+      "size": [
+        350,
+        180
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 18
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 19
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecode"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 14,
+      "type": "BExplainsRefPacksPreviewText",
+      "pos": [
+        1250,
+        850
+      ],
+      "size": [
+        350,
+        180
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 20
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BExplainsRefPacksPreviewText"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 15,
+      "type": "CreateVideo",
+      "pos": [
+        3000,
+        100
+      ],
+      "size": [
+        350,
+        180
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 1
+        },
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "VIDEO",
+          "type": "VIDEO",
+          "links": [
+            2
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CreateVideo"
+      },
+      "widgets_values": [
+        25,
+        "auto",
+        "sRGB",
+        "auto",
+        "none"
+      ]
+    },
+    {
+      "id": 16,
+      "type": "SaveVideo",
+      "pos": [
+        3400,
+        100
+      ],
+      "size": [
+        350,
+        180
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "link": 2
+        }
+      ],
+      "outputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SaveVideo"
+      },
+      "widgets_values": [
+        "video/RefPacks_LTXV",
+        "auto",
+        "auto"
+      ]
+    },
+    {
+      "id": 17,
+      "type": "Note",
+      "pos": [
+        0,
+        1150
+      ],
+      "size": [
+        1100,
+        250
+      ],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "Note"
+      },
+      "widgets_values": [
+        "REFPACKS 1.0.0 \u2014 LTXV 0.9.8 experimental test demo (not official model support). Select local model, encoder, VAE and image. Save refuses collisions by default; enable overwrite on reruns, or replace preparation+save with Load RefPack to reuse a cached file. LTXV: first-image/prefix guidance only, not H3-style identity/outfit conditioning. Flux 2: chain additional compatible packs via Add RefPack for multiple reference images.\n\nThis is a minimal single-pass 8-step distilled example, not the official multi-scale upscale pipeline. Its sigma values follow the distilled schedule. Keep the sampler/decode configuration from your established LTXV tutorial for direct comparisons. Connect length as a frame count; native LTXV rounds to 8n+1."
+      ]
+    }
+  ],
+  "links": [
+    [
+      1,
+      13,
+      0,
+      15,
+      0,
+      "IMAGE"
+    ],
+    [
+      2,
+      15,
+      0,
+      16,
+      0,
+      "VIDEO"
+    ],
+    [
+      3,
+      1,
+      2,
+      4,
+      0,
+      "VAE"
+    ],
+    [
+      4,
+      3,
+      0,
+      4,
+      1,
+      "IMAGE"
+    ],
+    [
+      5,
+      4,
+      0,
+      5,
+      0,
+      "BEXPLAINS_REFPACK"
+    ],
+    [
+      6,
+      5,
+      0,
+      6,
+      0,
+      "BEXPLAINS_REFPACK"
+    ],
+    [
+      7,
+      1,
+      0,
+      7,
+      0,
+      "MODEL"
+    ],
+    [
+      8,
+      2,
+      0,
+      7,
+      1,
+      "CLIP"
+    ],
+    [
+      9,
+      1,
+      2,
+      7,
+      2,
+      "VAE"
+    ],
+    [
+      10,
+      6,
+      0,
+      7,
+      3,
+      "BEXPLAINS_REFERENCES"
+    ],
+    [
+      11,
+      7,
+      0,
+      9,
+      0,
+      "MODEL"
+    ],
+    [
+      12,
+      7,
+      1,
+      9,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      13,
+      8,
+      0,
+      12,
+      0,
+      "NOISE"
+    ],
+    [
+      14,
+      9,
+      0,
+      12,
+      1,
+      "GUIDER"
+    ],
+    [
+      15,
+      10,
+      0,
+      12,
+      2,
+      "SAMPLER"
+    ],
+    [
+      16,
+      11,
+      0,
+      12,
+      3,
+      "SIGMAS"
+    ],
+    [
+      17,
+      7,
+      3,
+      12,
+      4,
+      "LATENT"
+    ],
+    [
+      18,
+      12,
+      0,
+      13,
+      0,
+      "LATENT"
+    ],
+    [
+      19,
+      7,
+      4,
+      13,
+      1,
+      "VAE"
+    ],
+    [
+      20,
+      7,
+      5,
+      14,
+      0,
+      "STRING"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.65,
+      "offset": [
+        50,
+        50
+      ]
+    }
+  },
+  "version": 0.4
+}
