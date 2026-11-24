@@ -26,7 +26,7 @@ def _path(name):
 
 
 def _files():
-    return sorted({f for f in folder_paths.get_filename_list("bexplains_refpacks") if f.endswith(".safetensors") and not f.endswith(REFERENCES_SUFFIX)} | {"character.safetensors", "dance.safetensors", "outfit.safetensors", "location.safetensors", "audio.safetensors", "reference.safetensors", "flux2_reference.safetensors", "ltxv_reference.safetensors"})
+    return sorted({f for f in folder_paths.get_filename_list("bexplains_refpacks") if f.endswith(".safetensors") and not f.endswith(REFERENCES_SUFFIX)})
 
 
 class BExplainsSaveRefPack:
@@ -89,7 +89,7 @@ def _references_path(name):
 
 def _reference_files():
     files = folder_paths.get_filename_list("bexplains_refpacks_references")
-    return sorted({f for f in files if f.endswith(REFERENCES_SUFFIX)} | {"scene" + REFERENCES_SUFFIX})
+    return sorted({f for f in files if f.endswith(REFERENCES_SUFFIX)})
 
 
 class BExplainsSaveRefPacksReferences:

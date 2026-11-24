@@ -147,7 +147,10 @@ class ReferenceSetTests(unittest.TestCase):
 
     def test_reference_sets_have_separate_loader_choices(self):
         def files(category):
-            return ['scene.references.safetensors','nested/segment.references.safetensors'] if category=='bexplains_refpacks_references' else ['character.safetensors','references/scene.references.safetensors']
+            return ['nested/segment.references.safetensors'] if category=='bexplains_refpacks_references' else ['actual.safetensors','references/scene.references.safetensors']
         with patch.object(nodes.folder_paths,'get_filename_list',side_effect=files):
-            self.assertNotIn('references/scene.references.safetensors',nodes._files())
-            self.assertIn('nested/segment.references.safetensors',nodes._reference_files())
+            self.assertEqual(nodes._files(), ['actual.safetensors'])
+            self.assertEqual(nodes._reference_files(), ['nested/segment.references.safetensors'])
+        with patch.object(nodes.folder_paths,'get_filename_list',return_value=[]):
+            self.assertEqual(nodes._files(), [])
+            self.assertEqual(nodes._reference_files(), [])

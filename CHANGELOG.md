@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.2 — 2026-11-24
+
+- Remove hardcoded example filenames from RefPack and RefPack Bundle load selectors. Only discovered files are listed; empty folders produce empty lists.
+- Preserve storage paths, file formats and internal node IDs.
+
 ## 1.1.1 — 2026-11-24
 
 - Rename the shared load/save node display names to Load RefPack Bundles and Save RefPack Bundles; update usage documentation.
