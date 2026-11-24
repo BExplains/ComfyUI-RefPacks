@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.1 — 2026-11-24
+
+- Rename the shared load/save node display names to Load RefPack Bundles and Save RefPack Bundles; update usage documentation.
+- Preserve internal node IDs, existing workflows, the models/refpacks/references folder and .references.safetensors files.
+
 ## 1.1.0 — 2026-11-23
 
 - Add Auto/Image/Video generation mode to H3 encoders. Auto uses length 1-4 for images and 5+ for video; explicit Video rounds up to at least five frames. VAE selection no longer chooses generation mode.

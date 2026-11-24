@@ -123,7 +123,7 @@ Each Add node returns the assembled set. Independent views within one image pack
 
 ### Save a complete scene or segment
 
-1. Connect the final Add node's `references` output to **BExplains Save RefPacks References**.
+1. Connect the final Add node's `references` output to **BExplains Save RefPack Bundles**.
 2. Enter a name such as `concert_opening`.
 3. Leave overwrite off to protect an existing collection.
 4. Queue the save node.
@@ -134,7 +134,7 @@ This creates:
 ComfyUI/models/refpacks/references/concert_opening.references.safetensors
 ```
 
-In another shot, use **BExplains Load RefPacks References** and connect its `references` output directly to the receiving encoder or inspector. You do not need the original individual pack files or the Add RefPack chain.
+In another shot, use **BExplains Load RefPack Bundles** and connect its `references` output directly to the receiving encoder or inspector. You do not need the original individual pack files or the Add RefPack chain.
 
 Loading restores the same ordered groups, entry order, roles and subject IDs. You can append more packs after loading without changing the stored file. Saving references does not save the prompt, sampler, model weights or the whole workflow.
 
@@ -147,8 +147,8 @@ Loading restores the same ordered groups, entry order, roles and subject IDs. Yo
 | BExplains Save RefPack | `BExplainsSaveRefPack` | `refpack`, `filename`, `overwrite` | Original `refpack`, complete `filename` |
 | BExplains Load RefPack | `BExplainsLoadRefPack` | File selection, `enabled` | `refpack`; disabled returns no pack |
 | BExplains Add RefPack | `BExplainsAddRefPack` | `refpack`, `role`, optional previous `references` | Assembled `references` |
-| BExplains Save RefPacks References | `BExplainsSaveRefPacksReferences` | `references`, `filename`, `overwrite` | Original `references`, complete `filename` |
-| BExplains Load RefPacks References | `BExplainsLoadRefPacksReferences` | File selection | Restored `references` |
+| BExplains Save RefPack Bundles | `BExplainsSaveRefPacksReferences` | `references`, `filename`, `overwrite` | Original `references`, complete `filename` |
+| BExplains Load RefPack Bundles | `BExplainsLoadRefPacksReferences` | File selection | Restored `references` |
 | BExplains Inspect RefPack Metadata | `BExplainsInspectReferences` | `references`, optional `vae`, `audio_vae` | Original set, metadata `report`, `Images`, `Audio` |
 | BExplains RefPacks Preview Text | `BExplainsRefPacksPreviewText` | `text` | Same STRING, displayed on the node |
 
@@ -178,7 +178,7 @@ The image receiver attaches cached native `reference_latents`. The LTXV receiver
 
 ### Extract media from an inspected RefPack
 
-Connect **Load RefPack → Add RefPack → Inspect**, or connect **Load RefPacks References** directly to an inspector. Both the shared metadata inspector and **BExplains Inspect Refpacks** expose `Images` and `Audio` after their original outputs.
+Connect **Load RefPack → Add RefPack → Inspect**, or connect **Load RefPack Bundles** directly to an inspector. Both the shared metadata inspector and **BExplains Inspect Refpacks** expose `Images` and `Audio` after their original outputs.
 
 - **Images without `vae`:** returns the stored reference pixels without decoding. H3 video references contain sampled vision frames, not every frame of the source clip.
 - **Images with `vae`:** reconstructs image/video latents using the matching visual VAE. A video entry stays together as one IMAGE batch, suitable for video preview or re-encoding. Use the VAE matching the entries; mixed model-family sets may require inspecting separate sets.
@@ -293,7 +293,7 @@ Select local weights and media. For comparisons with earlier tutorials, retain t
 | H3 dependency cannot be found | Install the shared package as `bexplains-refpacks`, `ComfyUI-RefPacks` or `BExplains_RefPacks` in a configured custom-node directory, then restart ComfyUI. |
 | New file absent from a loader | Refresh node definitions or the browser. Individual packs and complete reference sets have separate loader lists. |
 | Existing-file error | Choose a new name or explicitly enable overwrite. Default saves preserve the original file. |
-| Individual loader rejects a scene file | Use **Load RefPacks References**, not **Load RefPack**. |
+| Individual loader rejects a scene file | Use **Load RefPack Bundles**, not **Load RefPack**. |
 | Wrong-model error | Recreate the asset with the intended model family's VAE; changing the filename is not conversion. |
 | LTX reference resolution error | Match preparation width/height to output width/height. |
 | Multiple LTX guide error | This adapter accepts one first image or video prefix, not an arbitrary set of identity/outfit guides. |
@@ -307,7 +307,7 @@ No. RefPacks stores reference data; it does not train or modify diffusion weight
 
 ### Can I save a whole scene setup?
 
-Yes. Save the final references output with **Save RefPacks References**. The resulting file includes all underlying pack data and role ordering.
+Yes. Save the final references output with **Save RefPack Bundles**. The resulting file includes all underlying pack data and role ordering.
 
 ### Do the original individual files need to remain on disk?
 

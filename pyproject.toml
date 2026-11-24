@@ -1,6 +1,6 @@
 [project]
 name = "bexplains-refpacks"
-version = "1.1.0"
+version = "1.1.1"
 description = "Save, load and group reusable reference packs and complete reference sets. Includes experimental Flux 2 and LTXV adapters."
 readme = "README.md"
 license = { file = "LICENSE" }

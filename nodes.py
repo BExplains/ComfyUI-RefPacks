@@ -174,8 +174,8 @@ CLASSES = [BExplainsSaveRefPacksReferences, BExplainsLoadRefPacksReferences, BEx
            BExplainsEncodeImageReferences, BExplainsEncodeVideoReference, BExplainsRefPackToImage, BExplainsRefPackToVideo, BExplainsInspectReferences]
 NODE_CLASS_MAPPINGS = {c.__name__: c for c in CLASSES}
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "BExplainsSaveRefPacksReferences": "BExplains Save RefPacks References",
-    "BExplainsLoadRefPacksReferences": "BExplains Load RefPacks References",
+    "BExplainsSaveRefPacksReferences": "BExplains Save RefPack Bundles",
+    "BExplainsLoadRefPacksReferences": "BExplains Load RefPack Bundles",
     "BExplainsSaveRefPack": "BExplains Save RefPack",
     "BExplainsLoadRefPack": "BExplains Load RefPack",
     "BExplainsAddRefPack": "BExplains Add RefPack",
