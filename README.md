@@ -136,6 +136,14 @@ ComfyUI/models/refpacks/references/concert_opening.references.safetensors
 
 In another shot, use **BExplains Load RefPack Bundles** and connect its `references` output directly to the receiving encoder or inspector. You do not need the original individual pack files or the Add RefPack chain.
 
+### Merge bundles into an existing reference chain
+
+Connect two **Load RefPack Bundles** outputs (or existing reference chains) to **BExplains Merge RefPack Bundles**. Another input appears as you connect the last slot, up to 64 bundles. Connect its `references` output to Add RefPack, an encoder, an inspector, Save RefPack Bundles, or another Merge node.
+
+Groups are appended in input-slot order, preserving their names, roles, entries and cached media. The first bundle retains its IDs. Later role or subject IDs are kept when available and reassigned when they collide; inspect the merged output for the final prompt tags. Identical inputs are included twice, not deduplicated. Prompt text outside the bundles is not rewritten. Merging does not re-encode media or convert model families, so the receiving encoder still needs compatible references.
+
+The merger copies metadata containers without duplicating cached tensors or modifying its inputs. Bundle-level metadata is retained under `merged_from`; the first bundle's top-level metadata is also kept. Each connected input must contain at least one reference group. Empty trailing slots are ignored.
+
 Loading restores the same ordered groups, entry order, roles and subject IDs. You can append more packs after loading without changing the stored file. Saving references does not save the prompt, sampler, model weights or the whole workflow.
 
 ## Node reference
@@ -147,6 +155,7 @@ Loading restores the same ordered groups, entry order, roles and subject IDs. Yo
 | BExplains Save RefPack | `BExplainsSaveRefPack` | `refpack`, `filename`, `overwrite` | Original `refpack`, complete `filename` |
 | BExplains Load RefPack | `BExplainsLoadRefPack` | File selection, `enabled` | `refpack`; disabled returns no pack |
 | BExplains Add RefPack | `BExplainsAddRefPack` | `refpack`, `role`, optional previous `references` | Assembled `references` |
+| BExplains Merge RefPack Bundles | `BExplainsMergeRefPackBundles` | Two or more bundles (expanding input slots, up to 64) | Combined `references` |
 | BExplains Save RefPack Bundles | `BExplainsSaveRefPacksReferences` | `references`, `filename`, `overwrite` | Original `references`, complete `filename` |
 | BExplains Load RefPack Bundles | `BExplainsLoadRefPacksReferences` | File selection | Restored `references` |
 | BExplains Inspect RefPack Metadata | `BExplainsInspectReferences` | `references`, optional `vae`, `audio_vae` | Original set, metadata `report`, `Images`, `Audio` |

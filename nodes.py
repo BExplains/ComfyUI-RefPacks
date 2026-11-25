@@ -3,7 +3,7 @@ import time
 from pathlib import Path
 import torch
 import folder_paths
-from .core import FORMAT, VERSION, ROLES, add_pack, validate_pack
+from .core import FORMAT, VERSION, ROLES, add_pack, validate_pack, merge_bundles
 from .storage import load_pack, save_pack, load_references, save_references, REFERENCES_SUFFIX
 from .diagnostics import log
 CATEGORY = "BExplains/RefPacks"
@@ -156,6 +156,29 @@ class BExplainsAddRefPack:
         return (add_pack(refpack,references,role,0),)
 
 
+class BExplainsMergeRefPackBundles:
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {f"bundle_{i}": (SET_TYPE,) for i in (1, 2)},
+            "optional": {f"bundle_{i}": (SET_TYPE,) for i in range(3, 65)},
+        }
+
+    RETURN_TYPES = (SET_TYPE,)
+    RETURN_NAMES = ("references",)
+    FUNCTION = "merge"
+    CATEGORY = CATEGORY
+    DESCRIPTION = "Merge bundles in input-slot order. More slots appear as you connect bundles (up to 64). Retains all groups and cached media, preserving the first bundle's IDs and remapping later collisions. Inspect the merged references for the final prompt tags."
+
+    def merge(self, bundle_1, bundle_2, **kwargs):
+        bundles = [bundle_1, bundle_2]
+        for i in range(3, 65):
+            bundle = kwargs.get(f"bundle_{i}")
+            if bundle is not None:
+                bundles.append(bundle)
+        return (merge_bundles(bundles),)
+
+
 class BExplainsRefPacksPreviewText:
     @classmethod
     def INPUT_TYPES(cls):
@@ -170,10 +193,11 @@ class BExplainsRefPacksPreviewText:
 
 
 from .shared_nodes import BExplainsEncodeImageReferences, BExplainsEncodeVideoReference, BExplainsRefPackToImage, BExplainsRefPackToVideo, BExplainsInspectReferences
-CLASSES = [BExplainsSaveRefPacksReferences, BExplainsLoadRefPacksReferences, BExplainsSaveRefPack, BExplainsLoadRefPack, BExplainsAddRefPack, BExplainsRefPacksPreviewText,
+CLASSES = [BExplainsMergeRefPackBundles, BExplainsSaveRefPacksReferences, BExplainsLoadRefPacksReferences, BExplainsSaveRefPack, BExplainsLoadRefPack, BExplainsAddRefPack, BExplainsRefPacksPreviewText,
            BExplainsEncodeImageReferences, BExplainsEncodeVideoReference, BExplainsRefPackToImage, BExplainsRefPackToVideo, BExplainsInspectReferences]
 NODE_CLASS_MAPPINGS = {c.__name__: c for c in CLASSES}
 NODE_DISPLAY_NAME_MAPPINGS = {
+    "BExplainsMergeRefPackBundles": "BExplains Merge RefPack Bundles",
     "BExplainsSaveRefPacksReferences": "BExplains Save RefPack Bundles",
     "BExplainsLoadRefPacksReferences": "BExplains Load RefPack Bundles",
     "BExplainsSaveRefPack": "BExplains Save RefPack",

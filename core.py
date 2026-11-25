@@ -140,3 +140,66 @@ def validate_references(references):
         add_pack(pack, role=role, role_id=role_id)
     subject_numbers(references)
     return references
+
+
+def _copy_metadata(value):
+    """Copy containers without duplicating potentially large cached tensors."""
+    if isinstance(value, dict):
+        return {key: _copy_metadata(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return [_copy_metadata(item) for item in value]
+    if isinstance(value, tuple):
+        return tuple(_copy_metadata(item) for item in value)
+    return value
+
+
+def merge_bundles(bundles):
+    """Append groups, retaining free IDs and remapping collisions in input order."""
+    if len(bundles) < 2:
+        raise ValueError("Connect at least two RefPack bundles to merge.")
+    for bundle in bundles:
+        validate_references(bundle)
+    result = _copy_metadata(bundles[0])
+    result["groups"] = []
+    result["merged_from"] = [
+        _copy_metadata({key: value for key, value in bundle.items() if key != "groups"})
+        for bundle in bundles
+    ]
+    used_roles = {role: set() for role in ROLES}
+    used_subjects = set()
+
+    def available(preferred, used):
+        if preferred not in used:
+            return preferred
+        return next(i for i in range(1, len(used) + 2) if i not in used)
+
+    for bundle in bundles:
+        subjects = subject_numbers(bundle)
+        # Reserve IDs that can be retained, so an earlier collision cannot steal
+        # a later group's otherwise unused ID within the same input bundle.
+        reserved_subjects = set(subjects.values())
+        reserved_roles = {
+            role: {g["role_id"] for g in bundle["groups"] if g["role"] == role}
+            for role in ROLES
+        }
+        for index, original in enumerate(bundle["groups"]):
+            group = _copy_metadata(original)
+            role = group["role"]
+            if role in SUBJECT_ROLES:
+                preferred = subjects[index]
+                group["subject_id"] = (preferred if preferred not in used_subjects else
+                    available(preferred, used_subjects | reserved_subjects))
+                used_subjects.add(group["subject_id"])
+            if role == "subject":
+                group["role_id"] = group["subject_id"]
+            elif group["role_id"] in used_roles[role]:
+                group["role_id"] = available(group["role_id"], used_roles[role] | reserved_roles[role])
+            used_roles[role].add(group["role_id"])
+            result["groups"].append(group)
+    families = {g.get("target", g.get("source_target")) for g in result["groups"]}
+    if families <= {"h3", "h3_image", "h3_video"}:
+        has_video = any(e["kind"] in ("video", "audio") for g in result["groups"] for e in g["entries"])
+        result["target"] = "h3_video" if has_video else "h3"
+    else:
+        result["target"] = next(iter(families)) if len(families) == 1 else "mixed"
+    return validate_references(result)

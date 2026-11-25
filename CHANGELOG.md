@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.0 — 2026-11-25
+
+- Add Merge RefPack Bundles with two initial inputs and expanding slots for up to 64 bundles. Merge in slot order, retain cached media and group metadata, and resolve role/subject ID collisions without modifying the inputs.
+
 ## 1.1.2 — 2026-11-24
 
 - Remove hardcoded example filenames from RefPack and RefPack Bundle load selectors. Only discovered files are listed; empty folders produce empty lists.
